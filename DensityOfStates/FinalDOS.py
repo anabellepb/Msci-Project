@@ -11,7 +11,7 @@ def des_solution():
     """
 
     phonon_type = 'acoustic'
-    energy_difference = EnergyDifference.delta_energy(phonon_type)
+    instance = EnergyDifference(phonon_type)
+    energy_difference = instance.delta_energy()
 
     return energy_difference * numpy.pi
-

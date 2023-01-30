@@ -1,14 +1,31 @@
-import numpy as np
-
-from DensityOfStates.PhononEnergy import PhononEnergy, acoustic_phonon, optical_phonon, polar_optical_phonon
+from DensityOfStates.PhononEnergy import acoustic_phonon, optical_phonon, polar_optical_phonon
 
 
 class EnergyDifference:
 
-    def __init__(self):
+    def __init__(self, phonon_type):
+        self.phonon_type = phonon_type
         self.u = 0.4
         self.k = 9.0
         self.dt = 3.0
+
+    def energy_calculation(self, k, u):
+        """
+
+        :param k: position in Brillouin zone
+        :type k: float
+        :param u: velocity (?)
+        :type u: float
+        :return: Energy of an acoustic phonon
+        :rtype: float
+        """
+
+        if self.phonon_type == 'acoustic':
+            return acoustic_phonon(k, u)
+        elif self.phonon_type == 'optical':
+            return optical_phonon()
+        else:
+            return polar_optical_phonon()
 
     def initial_energy(self):
         """
@@ -16,12 +33,7 @@ class EnergyDifference:
         :return: Initial energy at a site for a specified phonon type
         :rtype: float
         """
-        if type == 'acoustic':
-            return acoustic_phonon(self.k, self.u)
-        elif type == 'optical':
-            return optical_phonon()
-        else:
-            return polar_optical_phonon()
+        return self.energy_calculation(self.k, self.u)
 
     def final_energy(self):
         """
@@ -29,12 +41,12 @@ class EnergyDifference:
         :return: Final energy at a site for a specified phonon type
         :rtype: float
         """
-        return (self.u * self.k) * self.dt
+        return self.energy_calculation(self.k * self.dt, self.u * self.dt)
 
-    def delta_energy(self, phonon_type):
+    def delta_energy(self):
         """
 
         :return: Difference in energy at sites for a specified phonon type
         :rtype: float
         """
-        return self.final_energy(phonon_type) - self.initial_energy(phonon_type)
+        return self.final_energy() - self.initial_energy()
